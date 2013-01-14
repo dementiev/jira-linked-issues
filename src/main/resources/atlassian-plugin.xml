@@ -1,0 +1,36 @@
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" name="${project.name}" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}"/>
+    </plugin-info>
+
+    <!-- i18n -->
+    <resource name="i18n" type="i18n" location="i18n"/>
+    <web-resource key="linkedissues-resources" name="Linked-issues resources">
+        <resource type="download" name="linkedissues.css" location="includes/css/linkedissues.css"/>
+    </web-resource>
+
+    <search-request-view key="searchrequest-linkedissues"
+                         i18n-name-key="admin.issue.views.searchrequest.plugin.linkedissues" name="Linked Issue Report"
+                         class="dementiev.SearchRequestLinkedIssuesView" state='enabled' fileExtension="html"
+                         contentType="text/html">
+        <resource type="velocity" name="header"
+                  location="templates/searchrequestviews/searchrequest-linkedissues-header.vm"/>
+        <resource type="velocity" name="footer"
+                  location="templates/plugins/searchrequestviews/searchrequest-printable-footer.vm"/>
+        <resource type="velocity" name="descriptionTable"
+                  location="templates/plugins/searchrequestviews/searchrequest-description-header.vm"/>
+        <resource type="velocity" name="previous"
+                  location="templates/plugins/searchrequestviews/searchrequest-link-previous.vm"/>
+        <order>70</order>
+    </search-request-view>
+
+    <component key="tableLayoutFactory" class="com.atlassian.jira.web.component.TableLayoutFactory">
+        <description>TableLayoutFactory</description>
+    </component>
+
+    <component key="columnLayoutItemFactory" class="com.atlassian.jira.web.component.subtask.ColumnLayoutItemFactory">
+        <description>columnLayoutItemFactory</description>
+    </component>
+</atlassian-plugin>

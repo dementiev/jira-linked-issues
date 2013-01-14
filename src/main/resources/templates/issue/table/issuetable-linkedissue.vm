@@ -1,0 +1,67 @@
+##disable_html_escaping() TODO REENABLE
+## display a single issue
+#linkedissues ($issue $linkedIssues $issueCount $layout.columns $layout.alternateRowColors $layout.cellDisplayParams $actionColumn $selectedIssueId)
+
+#macro (linkedissues $issue $linkedIssues $issueCount $columns $alternateRowColors $celldisplayparams $actionColumn $selectedIssueId)
+    #set ($quote = '"')
+    #set ($tooltip = $i18n.getText('navigator.carrot.helptext'))
+    #set($carrotHelpTextDisplayed = false)
+    #if ($selectedIssueId && $selectedIssueId == $issue.id)
+        #set ($carrotHelpTextDisplayed = true)
+        #set ($focusedClass = " focused")
+    #else
+        #set ($focusedClass = "")
+    #end
+<tr id="issuerow${issue.getId()}" rel="${issue.getId()}" data-issuekey="${issue.key}" class="issuerow${focusedClass}">
+    #foreach ($column in $columns)
+        #set($cell = $column.getHtml($celldisplayparams, $issue))
+        #set ($style = '')
+        #set ($title1 = '')
+        #set ($hiddenLink = '')
+        #if ($layout.cellDisplayParams && $layout.cellDisplayParams.get('email_view'))
+            #set ($style = ' style="border-bottom:1px solid #eeeeee;font-family: Arial, sans-serif;font-size: 14px;padding:2px;text-align:left;vertical-align:top;"')
+        #end
+        #if ($carrotHelpTextDisplayed == true && $keyboardShortcutManager.isKeyboardShortcutsEnabled())
+            #set($carrotHelpTextDisplayed = false)
+            #set ($title1 = " title=$quote$tooltip$quote")
+        #end
+        #if ($velocityCount <= 1 && $layout.cellDisplayParams && $layout.cellDisplayParams.get('navigator_view'))
+            #set ($hiddenLink = "<a class='hidden-link' href='$requestContext.baseUrl/browse/$issue.key' tabindex='-1'
+                                    title='$issue.key'></a> ")
+        #end
+        <td class="nav $column.navigableField.columnCssClass"$!{style}$!{title1}>$!{hiddenLink}${cell}</td>
+    #end
+    #if ($actionColumn)
+        <td class="nav $actionColumn.navigableField.columnCssClass">$actionColumn.getHtml($celldisplayparams, $issue)</td>
+    #end
+</tr>
+    #if (${linkedIssues}  && $linkedIssues.size() > 0)
+        #foreach ($issue in $linkedIssues)
+        <tr id="issuerow${issue.getId()}" rel="${issue.getId()}" data-issuekey="${issue.key}"
+            class="issuerow${focusedClass}">
+            #foreach ($column in $columns)
+                #set($cell = $column.getHtml($celldisplayparams, $issue))
+                #set ($style = '')
+                #set ($title1 = '')
+                #set ($hiddenLink = '')
+                #if ($layout.cellDisplayParams && $layout.cellDisplayParams.get('email_view'))
+                    #set ($style = ' style="border-bottom:1px solid #eeeeee;font-family: Arial, sans-serif;font-size: 14px;padding:2px;text-align:left;vertical-align:top;"')
+                #end
+                #if ($carrotHelpTextDisplayed == true && $keyboardShortcutManager.isKeyboardShortcutsEnabled())
+                    #set($carrotHelpTextDisplayed = false)
+                    #set ($title1 = " title=$quote$tooltip$quote")
+                #end
+                #if ($velocityCount <= 1 && $layout.cellDisplayParams && $layout.cellDisplayParams.get('navigator_view'))
+                    #set ($hiddenLink = "<a class='hidden-link' href='$requestContext.baseUrl/browse/$issue.key'
+                                            tabindex='-1'
+                                            title='$issue.key'></a> ")
+                #end
+                <td class="nav #if($column.getPosition()==0)linked-issue-padding#end $column.navigableField.columnCssClass"$!{style}$!{title1}>$!{hiddenLink}${cell}</td>
+            #end
+            #if ($actionColumn)
+                <td class="nav $actionColumn.navigableField.columnCssClass">$actionColumn.getHtml($celldisplayparams, $issue)</td>
+            #end
+        </tr>
+        #end
+    #end
+#end
